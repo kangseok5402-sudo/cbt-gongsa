@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기공사기사 단답 CBT</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .control-panel {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        select, button {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+        }
+        button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .q-header {
+            font-size: 13px;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .q-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .q-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-grade {
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-grade:hover {
+            background-color: #0284c7;
+        }
+        .difficulty-group button {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        .difficulty-group button.selected-high { background-color: #ef4444; color: white; border-color: #ef4444; }
+        .difficulty-group button.selected-mid { background-color: #f59e0b; color: white; border-color: #f59e0b; }
+        .difficulty-group button.selected-low { background-color: #10b981; color: white; border-color: #10b981; }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            display: none;
+        }
+        .result-box.show {
+            display: block;
+        }
+        .self-score-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .self-score-group button {
+            flex: 1;
+            font-size: 13px;
+        }
+        .score-full { background-color: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .score-part { background-color: #fef9c3; color: #854d0e; border-color: #fef08a; }
+        .score-zero { background-color: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        
+        .score-full.active-score { font-weight: bold; outline: 2px solid #166534; }
+        .score-part.active-score { font-weight: bold; outline: 2px solid #854d0e; }
+        .score-zero.active-score { font-weight: bold; outline: 2px solid #991b1b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>전기공사기사 단답 CBT</h1>
+
+    <!-- 컨트롤 패널 -->
+    <div class="control-panel">
+        <div class="control-group">
+            <label>모드:</label>
+            <button id="btnStudyMode" onclick="setMode('study')">공부 모드</button>
+            <button id="btnExamMode" class="active" onclick="setMode('exam')">시험 모드</button>
+        </div>
+        <div class="control-group">
+            <label>단원:</label>
+            <select id="chapterFilter" onchange="filterQuestions()">
+                <option value="all">전체 단원</option>
+                <option value="a">a단원 (발전/전동/변압)</option>
+                <option value="b">b단원 (콘덴서)</option>
+                <option value="c">c단원 (서지)</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>유형:</label>
+            <select id="typeFilter" onchange="filterQuestions()">
+                <option value="all">전체 유형</option>
+                <option value="1">1. 가지수</option>
+                <option value="2">2. 빈칸채우기</option>
+                <option value="3">3. 수식적기</option>
+                <option value="4">4. 그림</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 문제 리스트 영역 -->
+    <div id="questionContainer"></div>
+</div>
+
+<script>
+    // 예시 데이터 (나중에 시트 데이터를 여기에 맞추어 넣거나 동적 파싱 코드를 붙이면 됩니다)
+    const questionsData = [
+        {
+            id: "a_1_1",
+            chapter: "a",
+            type: "1",
+            number: 1,
+            question: "발전기 보호용 주보호 장치 3가지를 쓰시오.",
+            answer: "1. 비율차동계전기\n2. 과전류계전기\n3. 단락보호계전기",
+            explanation: "발전기 내부고장 및 단락사고 시 주보호로 사용됩니다.",
+            image: "" // 이미지가 있는 경우 파일명 입력 (예: "a_1_1.png")
+        },
+        {
+            id: "b_2_1",
+            chapter: "b",
+            type: "2",
+            number: 1,
+            question: "전력용 콘덴서의 용량은 (   ) 용량보다 커야 한다.",
+            answer: "변압기 무부하손",
+            explanation: "자기여자 현상 방지를 위한 필수 조건입니다.",
+            image: "b_2_1.png" // 이미지 테스트용 예시 이름
+        }
+    ];
+
+    let currentMode = 'exam'; // 기본 시험 모드
+
+    function init() {
+        renderQuestions(questionsData);
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('btnStudyMode').classList.toggle('active', mode === 'study');
+        document.getElementById('btnExamMode').classList.toggle('active', mode === 'exam');
+        renderQuestions(getFilteredQuestions());
+    }
+
+    function filterQuestions() {
+        renderQuestions(getFilteredQuestions());
+    }
+
+    function getFilteredQuestions() {
+        const chapter = document.getElementById('chapterFilter').value;
+        const type = document.getElementById('typeFilter').value;
+
+        return questionsData.filter(q => {
+            const matchChapter = (chapter === 'all' || q.chapter === chapter);
+            const matchType = (type === 'all' || q.type === type);
+            return matchChapter && matchType;
+        });
+    }
+
+    function renderQuestions(list) {
+        const container = document.getElementById('questionContainer');
+        container.innerHTML = '';
+
+        if (list.length === 0) {
+            container.innerHTML = '<div class="question-card" style="text-align:center;">조건에 해당하는 문제가 없습니다.</div>';
+            return;
+        }
+
+        list.forEach((q, index) => {
+            const savedState = JSON.parse(localStorage.getItem(q.id)) || { diff: '', score: '' };
+
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.innerHTML = `
+                <div class="q-header">단원: ${q.chapter.toUpperCase()} | 유형: ${q.type} | 번호: ${q.number} (ID: ${q.id})</div>
+                <div class="q-text">${index + 1}. ${q.question}</div>
+                ${q.image ? `<img src="images/${q.image}" class="q-image" onerror="this.style.display='none'" alt="문제 이미지 (${q.id})">` : ''}
+                
+                <textarea id="user_ans_${q.id}" placeholder="여기에 정답을 입력하세요...">${savedState.userAnswer || ''}</textarea>
+                
+                <div class="action-row">
+                    <button class="btn-grade" onclick="toggleGrade('${q.id}')">채점 / 정답 확인</button>
+                    
+                    <div class="control-group difficulty-group">
+                        <span>난이도/암기:</span>
+                        <button id="diff_high_${q.id}" class="${savedState.diff === 'high' ? 'selected-high' : ''}" onclick="setDifficulty('${q.id}', 'high')">상</button>
+                        <button id="diff_mid_${q.id}" class="${savedState.diff === 'mid' ? 'selected-mid' : ''}" onclick="setDifficulty('${q.id}', 'mid')">중</button>
+                        <button id="diff_low_${q.id}" class="${savedState.diff === 'low' ? 'selected-low' : ''}" onclick="setDifficulty('${q.id}', 'low')">하</button>
+                    </div>
+                </div>
+
+                <div id="result_${q.id}" class="result-box ${currentMode === 'study' ? 'show' : ''}">
+                    <strong>정답:</strong><br><div style="white-space: pre-line; margin-top: 4px; color: #166534; font-weight: 500;">${q.answer}</div>
+                    ${q.explanation ? `<br><strong>해설:</strong><div style="margin-top: 4px; color: #334155;">${q.explanation}</div>` : ''}
+                    
+                    <div class="self-score-group">
+                        <button class="score-full ${savedState.score === 'full' ? 'active-score' : ''}" onclick="setScore('${q.id}', 'full')">만점 (똑같이 씀)</button>
+                        <button class="score-part ${savedState.score === 'part' ? 'active-score' : ''}" onclick="setScore('${q.id}', 'part')">애매 (부분점수)</button>
+                        <button class="score-zero ${savedState.score === 'zero' ? 'active-score' : ''}" onclick="setScore('${q.id}', 'zero')">오답 (틀림)</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function toggleGrade(id) {
+        const resultBox = document.getElementById(`result_${id}`);
+        resultBox.classList.toggle('show');
+        
+        // 사용자가 타이핑한 답안 임시 저장
+        saveUserData(id);
+    }
+
+    function setDifficulty(id, level) {
+        let state = JSON.parse(localStorage.getItem(id)) || {};
+        state.diff = (state.diff === level) ? '' : level; // 토글 기능
+        localStorage.setItem(id, JSON.stringify(state));
+
+        // UI 업데이트
+        ['high', 'mid', 'low'].forEach(l => {
+            const btn = document.getElementById(`diff_${l}_${id}`);
+            if (btn) btn.className = (state.diff === l) ? `selected-${l}` : '';
+        });
+    }
+
+    function setScore(id, scoreType) {
+        let state = JSON.parse(localStorage.getItem(id)) || {};
+        state.score = (state.score === scoreType) ? '' : scoreType;
+        localStorage.setItem(id, JSON.stringify(state));
+
+        // UI 업데이트
+        const card = document.getElementById(`result_${id}`);
+        ['full', 'part', 'zero'].forEach(s => {
+            const btn = card.querySelector(`.score-${s}`);
+            if (btn) {
+                if (state.score === s) btn.classList.add('active-score');
+                else btn.classList.remove('active-score');
+            }
+        });
+    }
+
+    function saveUserData(id) {
+        const userAns = document.getElementById(`user_ans_${id}`).value;
+        let state = JSON.parse(localStorage.getItem(id)) || {};
+        state.userAnswer = userAns;
+        localStorage.setItem(id, JSON.stringify(state));
+    }
+
+    // 입력할 때마다 자동 저장 연동
+    document.addEventListener('input', function(e) {
+        if (e.target.tagName === 'TEXTAREA' && e.target.id.startsWith('user_ans_')) {
+            const id = e.target.id.replace('user_ans_', '');
+            saveUserData(id);
+        }
+    });
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
