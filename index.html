@@ -314,12 +314,15 @@
                 html += `<button class="btn-delete" onclick="removeFromNote('${q.id}', '${currentMode}')" title="노트에서 삭제">✖</button>`;
             }
             
-            if (q.image) html += `<img src="images/${q.image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
+            if (q.q_image) html += `<img src="q_images/${q.q_image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
 
             if (currentMode === 'study' || currentMode === 'memory-note' || currentMode === 'incorrect-note') {
                 html += `
                     <button class="btn-toggle" onclick="document.getElementById('ans_${q.id}').classList.toggle('show')">정답 보기 / 숨기기</button>
-                    <div id="ans_${q.id}" class="answer-box"><strong style="color:var(--primary);">정답:</strong><br>${q.answer.replace(/\n/g, '<br>')}</div>
+                    <div id="ans_${q.id}" class="answer-box">
+                        <strong style="color:var(--primary);">정답:</strong><br>${q.answer.replace(/\n/g, '<br>')}
+                        ${q.a_image ? `<img src="a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" onerror="this.style.display='none'">` : ''}
+                    </div>
                     ${renderDifficultyGroup(q.id, savedState.diff)}
                 `;
             } else if (currentMode === 'exam') {
@@ -384,7 +387,7 @@
                 </div>
                 <div class="q-text">${index + 1}. ${q.question.replace(/\n/g, '<br>')}</div>
             `;
-            if (q.image) html += `<img src="images/${q.image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
+            if (q.q_image) html += `<img src="q_images/${q.q_image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
             
             html += `
                 <div style="background:#fff; border:1px solid #cbd5e1; padding:10px; border-radius:4px; margin-bottom:10px;">
@@ -392,6 +395,7 @@
                 </div>
                 <div class="answer-box show" style="background:#f0fdf4; border:1px solid #bbf7d0;">
                     <strong style="color:#166534;">실제 정답:</strong><br><span style="white-space:pre-wrap;">${q.answer.replace(/\n/g, '<br>')}</span>
+                    ${q.a_image ? `<img src="a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" onerror="this.style.display='none'">` : ''}
                 </div>
                 
                 <div class="eval-row" style="margin-top:20px; border-top:1px dashed var(--border); padding-top:15px;">
