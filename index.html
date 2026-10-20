@@ -314,16 +314,21 @@
                 html += `<button class="btn-delete" onclick="removeFromNote('${q.id}', '${currentMode}')" title="노트에서 삭제">✖</button>`;
             }
             
-            if (q.q_image) html += `<img src="q_images/${q.q_image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
+            // 문제(Question) 이미지 출력
+            if (q.q_image) {
+                html += `<img src="./images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지 (${q.q_image})">`;
+            }
 
             if (currentMode === 'study' || currentMode === 'memory-note' || currentMode === 'incorrect-note') {
+                // 정답(Answer) 이미지 출력
+                let ansImgHtml = '';
+                if (q.a_image) {
+                    ansImgHtml = `<br><img src="./images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지 (${q.a_image})">`;
+                }
+                
                 html += `
                     <button class="btn-toggle" onclick="document.getElementById('ans_${q.id}').classList.toggle('show')">정답 보기 / 숨기기</button>
-                    <div id="ans_${q.id}" class="answer-box">
-                        <strong style="color:var(--primary);">정답:</strong><br>${q.answer.replace(/\n/g, '<br>')}
-                        ${q.a_image ? `<img src="a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" onerror="this.style.display='none'">` : ''}
-                    </div>
-                    ${renderDifficultyGroup(q.id, savedState.diff)}
+                    <div id="ans_${q.id}" class="answer-box"><strong style="color:var(--primary);">정답:</strong><br>${q.answer.replace(/\n/g, '<br>')}${ansImgHtml}</div>${renderDifficultyGroup(q.id, savedState.diff)}
                 `;
             } else if (currentMode === 'exam') {
                 html += `<textarea id="userans_${q.id}" placeholder="여기에 정답을 작성하세요..."></textarea>${renderDifficultyGroup(q.id, savedState.diff)}`;
@@ -387,15 +392,23 @@
                 </div>
                 <div class="q-text">${index + 1}. ${q.question.replace(/\n/g, '<br>')}</div>
             `;
-            if (q.q_image) html += `<img src="q_images/${q.q_image}" class="img-preview" style="display:block;" onerror="this.style.display='none'">`;
+            // 문제(Question) 이미지 출력
+            if (q.q_image) {
+                html += `<img src="./images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지 (${q.q_image})">`;
+            }
             
+            // 정답(Answer) 이미지 출력
+            let ansImgHtml = '';
+            if (q.a_image) {
+                ansImgHtml = `<br><img src="./images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지 (${q.a_image})">`;
+            }
+
             html += `
                 <div style="background:#fff; border:1px solid #cbd5e1; padding:10px; border-radius:4px; margin-bottom:10px;">
                     <strong style="font-size:13px; color:#64748b;">내 답안:</strong><br><span style="white-space:pre-wrap;">${savedState.tempAns || '<span style="color:#94a3b8;">(미작성)</span>'}</span>
                 </div>
                 <div class="answer-box show" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-                    <strong style="color:#166534;">실제 정답:</strong><br><span style="white-space:pre-wrap;">${q.answer.replace(/\n/g, '<br>')}</span>
-                    ${q.a_image ? `<img src="a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" onerror="this.style.display='none'">` : ''}
+                    <strong style="color:#166534;">실제 정답:</strong><br><span style="white-space:pre-wrap;">${q.answer.replace(/\n/g, '<br>')}${ansImgHtml}</span>
                 </div>
                 
                 <div class="eval-row" style="margin-top:20px; border-top:1px dashed var(--border); padding-top:15px;">
