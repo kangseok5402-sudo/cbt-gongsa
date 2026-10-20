@@ -316,14 +316,14 @@
             
             // 문제(Question) 이미지 출력
             if (q.q_image) {
-                html += `<img src="./images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지 (${q.q_image})">`;
+                html += `<img src="./q_images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지">`;
             }
 
             if (currentMode === 'study' || currentMode === 'memory-note' || currentMode === 'incorrect-note') {
                 // 정답(Answer) 이미지 출력
                 let ansImgHtml = '';
                 if (q.a_image) {
-                    ansImgHtml = `<br><img src="./images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지 (${q.a_image})">`;
+                    ansImgHtml = `<br><img src="./a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지">`;
                 }
                 
                 html += `
@@ -394,13 +394,13 @@
             `;
             // 문제(Question) 이미지 출력
             if (q.q_image) {
-                html += `<img src="./images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지 (${q.q_image})">`;
+                html += `<img src="./q_images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지">`;
             }
             
             // 정답(Answer) 이미지 출력
             let ansImgHtml = '';
             if (q.a_image) {
-                ansImgHtml = `<br><img src="./images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지 (${q.a_image})">`;
+                ansImgHtml = `<br><img src="./a_images/${q.a_image}" class="img-preview" style="display:block; margin-top:10px;" alt="정답 이미지">`;
             }
 
             html += `
