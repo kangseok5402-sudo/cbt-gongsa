@@ -87,6 +87,10 @@
         </div>
         
         <hr style="border:0; border-top:1px solid var(--border); margin:30px 0;">
+        <h3 style="margin-bottom: 10px; color:#475569;">🌟 추천 학습</h3>
+        <div class="menu-grid" style="margin-bottom: 30px;">
+            <button class="btn-large" style="margin:0; background-color:#8b5cf6;" onclick="selectModeAndStart('recent-3')">🔥 최근 3개년 (24~26년) 핵심 보기<br><span style="font-size:13px; font-weight:normal;">최신 트렌드 집중 공략</span></button>
+        </div>
         <h3 style="margin-bottom: 10px; color:#475569;">내 노트 관리</h3>
         <div class="menu-grid">
             <button class="btn-large" style="margin:0; background-color:#10b981;" onclick="openNote('memory')">📚 암기 노트<br><span style="font-size:13px; font-weight:normal;">난이도를 체크한 문제 모음</span></button>
@@ -165,6 +169,7 @@
                 <button class="btn-primary" onclick="startTest('freq')">시작</button>
             </div>
             
+            <div class="menu-item" style="background-color: #fef08a; border-color: #eab308;" onclick="startTest('recent-3')">최근 3개년 (24~26년) 보기</div>
             <div class="menu-item" onclick="startTest('year-after-2015')">2015년 이후 (10개년)</div>
             <div class="menu-item" onclick="startTest('year-2011-2015')">2011~2015년 (추가 5개년)</div>
             <div class="menu-item" onclick="startTest('year-before-2011')">2011년 이전 (고전 문제)</div>
@@ -222,6 +227,7 @@
             if (condition === 'after-2015' && yr >= 2015) match = true;
             if (condition === '2011-2015' && yr >= 2011 && yr <= 2015) match = true;
             if (condition === 'before-2011' && yr > 0 && yr < 2011) match = true;
+            if (condition === 'recent-3' && yr >= 2024 && yr <= 2026) match = true;
         });
         return match;
     }
@@ -263,6 +269,19 @@
         renderTest(list);
     }
 
+    
+    function selectModeAndStart(type) {
+        // 기본으로 공부 모드로 시작 (원하면 시험 모드로 변경 가능하게 하려면 분리해야 함)
+        // 사용자 편의상 모드 선택을 물어보거나, 기본값 사용
+        if(confirm("이 문제를 '시험 모드'로 푸시겠습니까?\n(취소를 누르면 '공부 모드'로 열립니다.)")) {
+            currentMode = 'exam';
+        } else {
+            currentMode = 'study';
+        }
+        document.getElementById('btn-back-test').setAttribute('onclick', "navTo('screen-home')");
+        startTest(type);
+    }
+
     function startTest(type) {
         let list = [];
         const all = [...questionsData];
@@ -280,6 +299,7 @@
             case 'year-after-2015': list = all.filter(q => matchYear(q, 'after-2015')); break;
             case 'year-2011-2015': list = all.filter(q => matchYear(q, '2011-2015')); break;
             case 'year-before-2011': list = all.filter(q => matchYear(q, 'before-2011')); break;
+            case 'recent-3': list = all.filter(q => matchYear(q, 'recent-3')); break;
             case 'all': list = all; break;
         }
         currentList = list;
