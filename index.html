@@ -476,8 +476,7 @@
                     <span class="badge">유형: ${typeMap[q.type] || q.type}</span>
                     <span class="badge">회차: ${q.years.join(', ')}</span>
                 </div>
-                <div class="q-text">${index + 1}. ${q.question.replace(/
-/g, '<br>')}</div>
+                <div class="q-text">${index + 1}. ${q.question.replace(/\n/g, '<br>')}</div>
             `;
             if (q.q_image) {
                 html += `<img src="./q_images/${q.q_image}" class="img-preview" style="display:block;" alt="문제 이미지">`;
@@ -493,8 +492,7 @@
                     <strong style="font-size:13px; color:#64748b;">내 답안:</strong><br><span style="white-space:pre-wrap;">${savedState.tempAns || '<span style="color:#94a3b8;">(미작성)</span>'}</span>
                 </div>
                 <div class="answer-box show" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-                    <strong style="color:#166534;">실제 정답:</strong><br><span style="white-space:pre-wrap;">${q.answer.replace(/
-/g, '<br>')}${ansImgHtml}</span>
+                    <strong style="color:#166534;">실제 정답:</strong><br><span style="white-space:pre-wrap;">${q.answer.replace(/\n/g, '<br>')}${ansImgHtml}</span>
                 </div>
                 
                 <div class="eval-row" style="margin-top:20px; border-top:1px dashed var(--border); padding-top:15px;">
@@ -543,7 +541,7 @@
             btn.classList.add('active-red');
         } else {
             btn.innerHTML = '📝 오답노트로 넘기기';
-            btn.classList.add('active-red'); // wait, active-red class style
+            btn.classList.remove('active-red');
         }
     }
 </script>
